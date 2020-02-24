@@ -1,0 +1,48 @@
+pipeline {
+    agent {
+        label 'btcl-web-agent-132'
+    }
+	
+    stages {
+        stage('Stage name') {
+            steps{ 
+            }
+        } 
+    }
+}
+stage('Pull') {
+    steps{
+	   echo "${env.JOB_NAME} started."
+        git(branch: 'develop', 
+            credentialsId: '7aefb138-7f50-496a-a850-8ca447cfb1b7', url: 'https://basir.leon:PUqzqgQrxRyQxyhQN55y@gitlab.com/basir.leon/btcl-automation.git')
+    }
+}
+
+stage('Build') {
+    steps{
+        bat(script: 'grails war', returnStatus: true)
+        archiveArtifacts '**/build/libs/*.war'
+    }
+}
+stage('Test') { 
+    when {
+        expression { 
+            def status = bat(returnStdout: true, script: 'grails test-app my.package.MyTestClass.myTestMethod | findstr BUILD')
+            
+            if(status.contains('BUILD') && status.contains('FAILED'))
+                return true
+               else 
+                return false
+        }
+    }
+    steps{
+        error("TEST FAILED")
+    }
+
+}
+
+stage('Deploy') {
+    steps {
+        copyArtifacts(filter: '**/build/libs/*.war', flatten: true, projectName: 'btcl', target: '/usr/local/jakarta-tomcat-7.0.61/webapps/btcl', selector: specific('${BUILD_NUMBER}'))
+    }
+}
