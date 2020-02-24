@@ -8,7 +8,6 @@ stage('Pull') {
         git(branch: 'develop', credentialsId: '7aefb138-7f50-496a-a850-8ca447cfb1b7', url: 'https://basir.leon:PUqzqgQrxRyQxyhQN55y@gitlab.com/basir.leon/btcl-automation.git')
     }
 }
-
 stage('Build') {
     steps{
         bat(script: 'grails war', returnStatus: true)
