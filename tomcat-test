@@ -37,3 +37,4 @@ stage('Deploy') {
         copyArtifacts(filter: '**/build/libs/*.war', flatten: true, projectName: 'btcl', target: '/usr/local/jakarta-tomcat-7.0.61/webapps/btcl', selector: specific('${BUILD_NUMBER}'))
     }
 }
+}
