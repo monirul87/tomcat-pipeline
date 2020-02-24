@@ -3,12 +3,6 @@ pipeline {
         label 'btcl-web-agent-132'
     }
 	
-    stages {
-        stage('Stage name') {
-            steps{ 
-            }
-        } 
-    }
 }
 stage('Pull') {
     steps{
